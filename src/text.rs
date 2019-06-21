@@ -29,10 +29,12 @@ macro_rules! color {
 
 impl Color {
     color!(red, (1.0, 0.0, 0.0));
+    color!(orange, (0.9, 0.35, 0.0));
     color!(green, (0.0, 1.0, 0.0));
     color!(blue, (0.0, 0.0, 1.0));
     color!(white, (1.0, 1.0, 1.0));
     color!(black, (0.0, 0.0, 0.0));
+    color!(grey, (0.3, 0.3, 0.3));
 
     pub fn apply_to_context(&self, cr: &Context) {
         cr.set_source_rgb(self.red, self.green, self.blue);
