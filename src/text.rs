@@ -2,7 +2,7 @@ use std::fmt;
 
 use cairo::{Context, Surface};
 use failure::format_err;
-use pango::{EllipsizeMode, FontDescription, LayoutExt};
+use pango::{Alignment, EllipsizeMode, FontDescription, LayoutExt};
 use pangocairo;
 
 use crate::Result;
@@ -163,6 +163,9 @@ impl ComputedText {
         layout.set_ellipsize(EllipsizeMode::End);
         layout.set_width(text_width as i32 * pango::SCALE);
         layout.set_height(text_height as i32 * pango::SCALE);
+        if self.stretch {
+            layout.set_alignment(Alignment::Center)
+        }
 
         let bg_color = &self.attr.bg_color.clone().unwrap_or_else(Color::black);
         bg_color.apply_to_context(&context);
