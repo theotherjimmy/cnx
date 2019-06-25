@@ -23,7 +23,7 @@ fn main() -> Result<()> {
     init_log()?;
 
     let attr = Attributes {
-        font: Font::new("SourceCodePro 12"),
+        font: Font::new("Noto Sans Mono"),
         fg_color: Color::white(),
         bg_color: Some(Color::grey()),
         padding: Padding::new(5.0, 5.0, 0.0, 0.0),
