@@ -40,7 +40,7 @@ fn main() -> Result<()> {
         cnx_add_widget!(cnx, Battery::new(&cnx, active_attr.clone(), Color::red()));
     }
     cnx_add_widget!(cnx, ActiveWindowTitle::new(&cnx, attr.clone()));
-    cnx_add_widget!(cnx, Volume::new(&cnx, attr.clone()));
+    cnx_add_widget!(cnx, Volume::new(&cnx, active_attr.clone()));
     cnx_add_widget!(cnx, Clock::new(&cnx, attr.clone()));
 
     cnx.run()?;
