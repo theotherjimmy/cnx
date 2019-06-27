@@ -1,6 +1,7 @@
 #![deny(warnings)]
 
 use std::env;
+use std::path::Path;
 
 use env_logger::{Builder, Target};
 use log::LevelFilter;
@@ -34,7 +35,10 @@ fn main() -> Result<()> {
 
     let mut cnx = Cnx::new(Position::Bottom)?;
 
-    cnx_add_widget!(cnx, Pager::new(&cnx, active_attr, attr.clone()));
+    cnx_add_widget!(cnx, Pager::new(&cnx, active_attr.clone(), attr.clone()));
+    if Path::new("/sys/class/power_supply/BAT0/present").exists() {
+        cnx_add_widget!(cnx, Battery::new(&cnx, active_attr.clone(), Color::red()));
+    }
     cnx_add_widget!(cnx, ActiveWindowTitle::new(&cnx, attr.clone()));
     cnx_add_widget!(cnx, Volume::new(&cnx, attr.clone()));
     cnx_add_widget!(cnx, Clock::new(&cnx, attr.clone()));
