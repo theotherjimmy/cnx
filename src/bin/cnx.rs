@@ -2,7 +2,7 @@
 
 use std::env;
 
-use env_logger::Builder;
+use env_logger::{Builder, Target};
 use log::LevelFilter;
 
 use cnx::text::*;
@@ -15,6 +15,7 @@ fn init_log() -> Result<()> {
     if let Ok(rust_log) = env::var("RUST_LOG") {
         builder.parse_filters(&rust_log);
     }
+    builder.target(Target::Stdout);
     builder.try_init()?;
     Ok(())
 }
