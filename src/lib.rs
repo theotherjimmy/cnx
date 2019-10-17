@@ -98,7 +98,6 @@
 //! [`mio`]: https://docs.rs/mio
 //! [`tokio`]: https://tokio.rs/
 //! [`Cnx`]: struct.Cnx.html
-//! [`QTile`]: http://www.qtile.org/
 //! [`dwm`]: http://dwm.suckless.org/
 //! [readme-deps]: https://github.com/mjkillough/cnx/blob/master/README.md#dependencies
 //! [`src/bin/cnx.rs`]: https://github.com/mjkillough/cnx/blob/master/src/bin/cnx.rs
@@ -235,42 +234,4 @@ impl Cnx {
         self.core
             .run(self.bar.run_event_loop(&handle, self.widgets)?)
     }
-}
-
-/// Adds a `Widget` to a `Cnx` instance.
-///
-/// This macro adds a [`Widget`] to a [`Cnx`] instance, placing it to the right
-/// of any existing widgets. (Internally, this macro uses
-/// [`Cnx::add_widget()`]).
-///
-/// This macro serves two purposes:
-///
-///  - It avoids lexical-lifetime issues in the borrow checker, if the
-///    [`Widget`]'s constructor borrows the [`Cnx`] instance and is constructed
-///    as part of the same statement where it's added to the [`Cnx`] instance.
-///
-///    For instance, this works:
-///
-///    ```ignore
-///    cnx_add_widget!(cnx, DummyWidget::new(&cnx)))
-///    ```
-///
-///    Whereas this doesn't pass borrow checking:
-///
-///    ```ignore
-///    cnx.add_widget(DummyWidget::new(&cnx))
-///    ```
-///
-///  - It might one day grow into a more complex DSL to pass configurable
-///    attributes through to widgets.
-///
-/// [`Widget`]: widgets/trait.Widget.html
-/// [`Cnx`]: struct.Cnx.html
-/// [`Cnx::add_widget()`]: struct.Cnx.html#method.add_widget
-#[macro_export]
-macro_rules! cnx_add_widget {
-    ($cnx:ident, $widget:expr) => {
-        let widget = $widget;
-        $cnx.add_widget(widget);
-    };
 }

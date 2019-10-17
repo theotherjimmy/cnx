@@ -35,13 +35,16 @@ fn main() -> Result<()> {
 
     let mut cnx = Cnx::new(Position::Bottom)?;
 
-    cnx_add_widget!(cnx, Pager::new(&cnx, active_attr.clone(), attr.clone()));
+    cnx.add_widget(Pager::new(&cnx, active_attr.clone(), attr.clone()));
     if Path::new("/sys/class/power_supply/BAT0/present").exists() {
-        cnx_add_widget!(cnx, Battery::new(&cnx, active_attr.clone(), Color::red()));
+        cnx.add_widget(Battery::new(&cnx, active_attr.clone(), Color::red()));
     }
-    cnx_add_widget!(cnx, ActiveWindowTitle::new(&cnx, attr.clone()));
-    cnx_add_widget!(cnx, Volume::new(&cnx, active_attr.clone()));
-    cnx_add_widget!(cnx, Clock::new(&cnx, attr.clone()));
+    cnx.add_widget(ActiveWindowTitle::new(&cnx, attr.clone()));
+    cnx.add_widget(Clock::new(
+        &cnx,
+        String::from("%Y-%m-%d %a %I:%M %p"),
+        attr.clone(),
+    ));
 
     cnx.run()?;
 

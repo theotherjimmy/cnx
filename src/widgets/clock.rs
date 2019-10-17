@@ -14,6 +14,7 @@ use crate::{Cnx, Result};
 /// This widget shows the current time and date, in the form `%Y-%m-%d %a %I:%M
 /// %p`, e.g. `2017-09-01 Fri 12:51 PM`.
 pub struct Clock {
+    format: String,
     timer: Timer,
     attr: Attributes,
 }
@@ -52,13 +53,14 @@ impl Clock {
     /// };
     ///
     /// let mut cnx = Cnx::new(Position::Top)?;
-    /// cnx_add_widget!(cnx, Clock::new(&cnx, attr.clone()));
+    /// cnx.add_widget(String::from("%Y-%m-%d %a %I:%M %p")) Clock::new(&cnx, attr.clone()));
     /// # Ok(())
     /// # }
     /// # fn main() { run().unwrap(); }
     /// ```
-    pub fn new(cnx: &Cnx, attr: Attributes) -> Clock {
+    pub fn new(cnx: &Cnx, format: String, attr: Attributes) -> Clock {
         Clock {
+            format,
             timer: cnx.timer(),
             attr,
         }
@@ -74,9 +76,10 @@ impl Widget for Clock {
         let stream = stream::unfold(sleep_for, move |sleep_for| {
             // Avoid having to move self into the .map() closure.
             let attr = self.attr.clone();
+            let format_str = self.format.clone();
             Some(self.timer.sleep(sleep_for).map(move |()| {
                 let now = Local::now();
-                let formatted = now.format("%Y-%m-%d %a %I:%M %p").to_string();
+                let formatted = now.format(&format_str).to_string();
                 let texts = vec![Text {
                     attr: attr,
                     text: formatted,
