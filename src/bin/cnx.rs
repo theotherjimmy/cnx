@@ -26,23 +26,27 @@ fn main() -> Result<()> {
 
     let attr = Attributes {
         font: Font::new("Noto Sans Mono"),
-        fg_color: Color::white(),
-        bg_color: Some(Color::grey()),
+        fg_color: "3c3836".parse().unwrap(),
+        bg_color: Some("fbf1c7".parse().unwrap()),
         padding: Padding::new(5.0, 5.0, 0.0, 0.0),
     };
     let mut active_attr = attr.clone();
-    active_attr.bg_color = Some(Color::orange());
+    active_attr.bg_color = Some("d65d0e".parse().unwrap());
 
     let mut cnx = Cnx::new(Position::Bottom)?;
 
-    cnx.add_widget(Pager::new(&cnx, active_attr.clone(), attr.clone()));
     if Path::new("/sys/class/power_supply/BAT0/present").exists() {
-        cnx.add_widget(Battery::new(&cnx, active_attr.clone(), Color::red()));
+        cnx.add_widget(Battery::new(
+            &cnx,
+            active_attr.clone(),
+            "cc241d".parse().unwrap(),
+        ));
     }
     cnx.add_widget(ActiveWindowTitle::new(&cnx, attr.clone()));
+    cnx.add_widget(Pager::new(&cnx, active_attr.clone(), attr.clone()));
     cnx.add_widget(Clock::new(
         &cnx,
-        String::from("%Y-%m-%d %a %I:%M %p"),
+        String::from("%Y-%m-%d %a %I:%M"),
         attr.clone(),
     ));
 

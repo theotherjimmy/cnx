@@ -1,4 +1,6 @@
 use std::fmt;
+use std::num::ParseIntError;
+use std::str::FromStr;
 
 use cairo::{Context, Surface};
 use failure::format_err;
@@ -14,30 +16,38 @@ pub struct Color {
     blue: f64,
 }
 
-macro_rules! color {
-    ($name:ident,($r:expr, $g:expr, $b:expr)) => {
-        #[allow(dead_code)]
-        pub fn $name() -> Color {
-            Color {
-                red: $r,
-                green: $g,
-                blue: $b,
-            }
-        }
-    };
+#[derive(Debug)]
+pub enum ParseColorError {
+    Red(ParseIntError),
+    Green(ParseIntError),
+    Blue(ParseIntError),
 }
 
 impl Color {
-    color!(red, (1.0, 0.0, 0.0));
-    color!(orange, (0.9, 0.35, 0.0));
-    color!(green, (0.0, 1.0, 0.0));
-    color!(blue, (0.0, 0.0, 1.0));
-    color!(white, (1.0, 1.0, 1.0));
-    color!(black, (0.0, 0.0, 0.0));
-    color!(grey, (0.3, 0.3, 0.3));
-
     pub fn apply_to_context(&self, cr: &Context) {
         cr.set_source_rgb(self.red, self.green, self.blue);
+    }
+}
+
+impl Default for Color {
+    fn default() -> Self {
+        Color {
+            red: 0.0,
+            green: 0.0,
+            blue: 0.0,
+        }
+    }
+}
+
+impl FromStr for Color {
+    type Err = ParseColorError;
+    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
+        Ok(Color {
+            red: (u8::from_str_radix(&s[0..2], 16).map_err(ParseColorError::Red)?) as f64 / 256.0,
+            green: (u8::from_str_radix(&s[2..4], 16).map_err(ParseColorError::Green)?) as f64
+                / 256.0,
+            blue: (u8::from_str_radix(&s[4..6], 16).map_err(ParseColorError::Blue)?) as f64 / 256.0,
+        })
     }
 }
 
@@ -167,7 +177,7 @@ impl ComputedText {
             layout.set_alignment(Alignment::Center)
         }
 
-        let bg_color = &self.attr.bg_color.clone().unwrap_or_else(Color::black);
+        let bg_color = &self.attr.bg_color.clone().unwrap_or_default();
         bg_color.apply_to_context(&context);
         // FIXME: The use of `height` isnt' right here: we want to do the
         // full height of the bar, not the full height of the text. It
